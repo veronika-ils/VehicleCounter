@@ -1,25 +1,46 @@
-# 🚦 Vehicle Counter with CLIP  
+# Vehicle Counting with CLIP  
 
-A computer vision project for detecting and **counting vehicles in images** using **OpenAI CLIP** features and a lightweight trained head.  
-Instead of traditional real-time detection, this project uses **CLIP embeddings** to classify and estimate the number of vehicles in a given image.  
+This project explores the use of **CLIP (Contrastive Language–Image Pretraining)** models for experimental vehicle counting in images.  
+Three different code approaches were implemented and compared, each attempting to estimate the number of cars present in images.  
 
----
-
-## 🚗 Features  
-- Vehicle counting on **static images** (no real-time video)  
-- Uses **CLIP model** to extract semantic features  
-- Small supervised head trained on top of CLIP for vehicle count classification (0..N cars)  
-- Works on custom datasets of labeled vehicle images  
-- Exports results to CSV for analysis  
+The project is **experimental** – CLIP is not designed for object counting, so results are limited, but the analysis demonstrates different methods and how accuracy changes across approaches.  
 
 ---
 
-## 🛠 Technologies Used  
-- **Python 3.9+**  
-- **PyTorch** – CLIP backbone  
-- **OpenAI CLIP** – for image embeddings  
-- **scikit-learn** – lightweight classification head  
-- **NumPy / Pandas** – data handling  
-- **Pillow** – image preprocessing  
+## Project Structure  
 
+- **Code 1 (`CLIPCounter.py`)** – Baseline CLIP approach  
+  - Uses OpenAI’s CLIP ViT model directly.  
+  - Compares text prompts (`"0 cars"`, `"1 car"`, …) against image embeddings.  
+  - Produces stable but low-confidence predictions.  
 
+- **Code 2 (`CLIPCounterHuggingFace.py`)** – Prompt engineering with thresholds  
+  - Adds calibration and probability thresholds to filter uncertain results.  
+  - Appears more confident in graphs but actually produces weaker accuracy.  
+
+- **Code 3 (`CLIPCounterHFTrain.py`)** – CLIP + Logistic Regression Head  
+  - Trains a small classifier (scikit-learn) on top of CLIP embeddings.  
+  - Achieves the best overall performance among the three approaches.  
+  - Still limited in precision due to CLIP’s design.  
+
+- **Data**  
+  - `train.csv` – training data with image paths and counts.  
+  - `vgc_clip_vehicle_counts.csv` – results of code 1.  
+  - `vgh_clip_vehicle_counts.csv` – results of code 2.
+  - `vg_clip_vehicle_counts.csv` – results of code 3.   
+
+---
+
+## Running the Code  
+
+### Requirements  
+- Python 3.9+  
+- PyTorch  
+- Transformers (Hugging Face)  
+- scikit-learn  
+- pandas  
+- joblib  
+
+Install dependencies:  
+```bash
+pip install torch torchvision transformers scikit-learn pandas joblib
